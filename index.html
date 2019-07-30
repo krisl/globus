@@ -37,8 +37,7 @@
       //import { GeometryUtils } from './jsm/utils/GeometryUtils.js';
 
       var line, renderer, scene, camera, camera2, controls;
-      var line1;
-      var matLine, matLineBasic, matLineDashed;
+      var matLine;
       var stats;
       var gui;
 
@@ -112,21 +111,6 @@
         line.computeLineDistances();
         line.scale.set( 1, 1, 1 );
         scene.add( line );
-
-
-        // THREE.Line ( THREE.BufferGeometry, THREE.LineBasicMaterial ) - rendered with gl.LINE_STRIP
-
-        var geo = new THREE.BufferGeometry();
-        geo.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-        geo.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-
-        matLineBasic = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
-        matLineDashed = new THREE.LineDashedMaterial( { vertexColors: THREE.VertexColors, scale: 2, dashSize: 1, gapSize: 1 } );
-
-        line1 = new THREE.Line( geo, matLineBasic );
-        line1.computeLineDistances();
-        line1.visible = false;
-        scene.add( line1 );
 
         //
 
@@ -203,35 +187,12 @@
         gui = new dat.GUI();
 
         var param = {
-          'line type': 0,
           'width (px)': 5,
           'dashed': false,
           'dash scale': 1,
           'dash / gap': 1
         };
 
-
-        gui.add( param, 'line type', { 'LineGeometry': 0, 'gl.LINE': 1 } ).onChange( function ( val ) {
-
-          switch ( val ) {
-
-            case '0':
-              line.visible = true;
-
-              line1.visible = false;
-
-              break;
-
-            case '1':
-              line.visible = false;
-
-              line1.visible = true;
-
-              break;
-
-          }
-
-        } );
 
         gui.add( param, 'width (px)', 1, 10 ).onChange( function ( val ) {
 
@@ -249,14 +210,12 @@
           if ( val ) matLine.defines.USE_DASH = ""; else delete matLine.defines.USE_DASH;
           matLine.needsUpdate = true;
 
-          line1.material = val ? matLineDashed : matLineBasic;
 
         } );
 
         gui.add( param, 'dash scale', 0.5, 2, 0.1 ).onChange( function ( val ) {
 
           matLine.dashScale = val;
-          matLineDashed.scale = val;
 
         } );
 
@@ -268,26 +227,17 @@
               matLine.dashSize = 2;
               matLine.gapSize = 1;
 
-              matLineDashed.dashSize = 2;
-              matLineDashed.gapSize = 1;
-
               break;
 
             case '1':
               matLine.dashSize = 1;
               matLine.gapSize = 1;
 
-              matLineDashed.dashSize = 1;
-              matLineDashed.gapSize = 1;
-
               break;
 
             case '2':
               matLine.dashSize = 1;
               matLine.gapSize = 2;
-
-              matLineDashed.dashSize = 1;
-              matLineDashed.gapSize = 2;
 
               break;
 
