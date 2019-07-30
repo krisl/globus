@@ -80,12 +80,12 @@
         var divisions = Math.round( 12 * points.length );
         var color = new THREE.Color();
 
-        for ( var i = 0, l = divisions; i < l; i ++ ) {
+        for ( var i = 0; i < divisions; i ++ ) {
 
-          var point = spline.getPoint( i / l );
+          var point = spline.getPoint( i / divisions );
           positions.push( point.x, point.y, point.z );
 
-          color.setHSL( i / l, 1.0, 0.5 );
+          color.setHSL( i / divisions, 1.0, 0.5 );
           colors.push( color.r, color.g, color.b );
 
         }
