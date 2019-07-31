@@ -24,7 +24,30 @@
     <div id="info"><a href="https://threejs.org" target="_blank">three.js</a> - fat lines</div>
 
     <script type="module">
+      const GLOBE_RADIUS = 20
+      const DEGREE_TO_RADIAN = Math.PI / 180
 
+      function latLonToVec(lat, lng, altitude) {
+          const radius = GLOBE_RADIUS + altitude
+          const phi = (90 - lat) * DEGREE_TO_RADIAN
+          const theta = (lng + 180) * DEGREE_TO_RADIAN
+
+          return new THREE.Vector3(
+            - radius * Math.sin(phi) * Math.cos(theta),
+            radius * Math.cos(phi),
+            radius * Math.sin(phi) * Math.sin(theta)
+          )
+      }
+
+      const auckland = latLonToVec(-36.848461, 174.763336, 0)
+      const wellington = latLonToVec(-41.28664, 174.77557, 0)
+
+      const nelson = latLonToVec(-41.27078, 173.28404, 0)
+      const dunedin = latLonToVec(-45.87416, 170.50361, 0)
+
+      const madrid = latLonToVec(40.416775, -3.703790, 0)
+      const beijing = latLonToVec(39.913818, 116.363625, 0)
+      console.log({auckland, wellington, nelson, dunedin})
       //import * as THREE from '../build/three.module.js';
 
       //import Stats from './jsm/libs/stats.module.js';
@@ -71,43 +94,21 @@
 
         // Position and THREE.Color Data
 
-        var positions = [];
-        var colors = [];
-
         var points = THREE.GeometryUtils.hilbert3D( new THREE.Vector3( 0, 0, 0 ), 20.0, 1, 0, 1, 2, 3, 4, 5, 6, 7 );
         console.log({points})
-        var spline1 = new THREE.CatmullRomCurve3( points.splice(20) );
-        var splinex = new THREE.QuadraticBezierCurve3( 
-          new THREE.Vector3( -10, 0, 0 ),
-          new THREE.Vector3( 20, 15, 0 ),
-          new THREE.Vector3( 10, 0, 0 )
-        );
-        var spline = new THREE.CubicBezierCurve3(
-          new THREE.Vector3( -10, 0, 0 ),
-          new THREE.Vector3( -5, 15, 0 ),
-          new THREE.Vector3( 20, 15, 0 ),
-          new THREE.Vector3( 10, 0, 0 )
-        );
+        //var spline1 = new THREE.CatmullRomCurve3( points.splice(20) );
+        //var spline = new THREE.QuadraticBezierCurve3( 
+        //  new THREE.Vector3( -10, 0, 0 ),
+        //  new THREE.Vector3( 0, 0, 0 ),
+        //  new THREE.Vector3( 10, 0, 0 )
+        //);
+        //var splinex = new THREE.CubicBezierCurve3(
+        //  new THREE.Vector3( -10, 0, 0 ),
+        //  new THREE.Vector3( -5, 15, 0 ),
+        //  new THREE.Vector3( 20, 15, 0 ),
+        //  new THREE.Vector3( 10, 0, 0 )
+        //);
         //var spline = new THREE.LineCurve3(points[0], points[points.length-1]);
-        var divisions = Math.round( 12 * points.length );
-        var color = new THREE.Color();
-
-        for ( var i = 0; i < divisions; i ++ ) {
-
-          var point = spline.getPoint( i / divisions );
-          positions.push( point.x, point.y, point.z );
-
-          color.setHSL( i / divisions, 1.0, 0.5 );
-          colors.push( color.r, color.g, color.b );
-
-        }
-
-
-        // Line2 ( LineGeometry, LineMaterial )
-
-        var geometry = new THREE.LineGeometry();
-        geometry.setPositions( positions );
-        geometry.setColors( colors );
 
         matLine = new THREE.LineMaterial( {
 
@@ -119,10 +120,42 @@
 
         } );
 
-        line = new THREE.Line2( geometry, matLine );
-        line.computeLineDistances();
-        line.scale.set( 1, 1, 1 );
-        scene.add( line );
+        function plotPath(start, end) {
+          const spline = new THREE.LineCurve3(start, end)
+          var divisions = Math.round( 12 * points.length );
+          var color = new THREE.Color();
+          var positions = [];
+          var colors = [];
+
+          for ( var i = 0; i < divisions; i ++ ) {
+
+            var point = spline.getPoint( i / divisions );
+            positions.push( point.x, point.y, point.z );
+
+            color.setHSL( i / divisions, 1.0, 0.5 );
+            colors.push( color.r, color.g, color.b );
+
+          }
+
+
+          // Line2 ( LineGeometry, LineMaterial )
+
+          var geometry = new THREE.LineGeometry();
+          geometry.setPositions( positions );
+          geometry.setColors( colors );
+
+          line = new THREE.Line2( geometry, matLine );
+          line.computeLineDistances();
+          line.scale.set( 1, 1, 1 );
+          scene.add( line );
+        }
+
+        plotPath(auckland, madrid);
+        plotPath(auckland, wellington);
+        plotPath(dunedin, beijing);
+        plotPath(nelson, dunedin);
+        //const spline = new THREE.LineCurve3(auckland, madrid)
+        //const spline2 = new THREE.LineCurve3(nelson, dunedin)
 
         //
 
