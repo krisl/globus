@@ -39,14 +39,21 @@
           )
       }
 
-      const auckland = latLonToVec(-36.848461, 174.763336, 0)
-      const wellington = latLonToVec(-41.28664, 174.77557, 0)
+      const auckland = {lat: -36.848461, lon: 174.763336}
+      const wellington = {lat: -41.28664, lon: 174.77557}
+      const nelson = {lat:-41.27078, lon: 173.28404}
+      const dunedin = {lat:-45.87416, lon: 170.50361}
+      const madrid = {lat:40.416775, lon: -3.703790}
+      const beijing = {lat:39.913818, lon: 116.363625}
+      
+      const aucklandVec = latLonToVec(auckland.lat, auckland.lon, 0)
+      const wellingtonVec = latLonToVec(wellington.lat, wellington.lon, 0)
 
-      const nelson = latLonToVec(-41.27078, 173.28404, 0)
-      const dunedin = latLonToVec(-45.87416, 170.50361, 0)
+      const nelsonVec = latLonToVec(nelson.lat, nelson.lon, 0)
+      const dunedinVec = latLonToVec(dunedin.lat, dunedin.lon, 0)
 
-      const madrid = latLonToVec(40.416775, -3.703790, 0)
-      const beijing = latLonToVec(39.913818, 116.363625, 0)
+      const madridVec = latLonToVec(madrid.lat, madrid.lon, 0)
+      const beijingVec = latLonToVec(beijing.lat, beijing.lon, 0)
       console.log({auckland, wellington, nelson, dunedin})
       //import * as THREE from '../build/three.module.js';
 
@@ -150,10 +157,10 @@
           scene.add( line );
         }
 
-        plotPath(auckland, madrid);
-        plotPath(auckland, wellington);
-        plotPath(dunedin, beijing);
-        plotPath(nelson, dunedin);
+        plotPath(aucklandVec, madridVec);
+        plotPath(aucklandVec, wellingtonVec);
+        plotPath(dunedinVec, beijingVec);
+        plotPath(nelsonVec, dunedinVec);
         //const spline = new THREE.LineCurve3(auckland, madrid)
         //const spline2 = new THREE.LineCurve3(nelson, dunedin)
 
