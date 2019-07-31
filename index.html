@@ -155,7 +155,7 @@
           //const spline = new THREE.LineCurve3(start, end)
           const mid = getMidVec(start, end)
           //const elev = new THREE.Vector3( mid.x * 1.2, mid.y * 1.2, mid.z * 1.2 )
-          const elev = mid.clampLength(GLOBE_RADIUS + 2, 500)
+          const elev = mid.clampLength(GLOBE_RADIUS + 49, 500)
           console.log('pp', {mid, elev})
           //const elev = latLonToVec(mid.lat, mid.lon, 5)
           console.log({mid, elev})
