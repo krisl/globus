@@ -42,26 +42,37 @@
       const getMidPoint = (a, b) => ({lat: (a.lat + b.lat)/2.0, lon: (a.lon + b.lon)/2.0})
       const getMidVec = (a, b) => new THREE.Vector3((a.x + b.x)/2.0, (a.y + b.y)/2.0, (a.z + b.z)/2.0)
 
-      const auckland = {lat: -36.848461, lon: 174.763336}
-      const wellington = {lat: -41.28664, lon: 174.77557}
-      const nelson = {lat:-41.27078, lon: 173.28404}
-      const dunedin = {lat:-45.87416, lon: 170.50361}
-      const madrid = {lat:40.416775, lon: -3.703790}
-      const beijing = {lat:39.913818, lon: 116.363625}
+      const cities = {
+        'Auckland': {lat: -36.848461, lon: 174.763336},
+        'Wellington': {lat: -41.28664, lon: 174.77557},
+        'Nelson': {lat:-41.27078, lon: 173.28404},
+        'Dunedin': {lat:-45.87416, lon: 170.50361},
+        'Madrid': {lat:40.416775, lon: -3.703790},
+        'Beijing': {lat:39.913818, lon: 116.363625},
+        'SanJose': {lat: 37.335480, lon: -121.893028},
+        'Ashburn': {lat: 39.04372, lon: -77.48749},
+        'Paris': {lat: 48.864716, lon: 2.349014},
+        'Frankfurt': {lat: 50.110924, lon: 8.682127},
+        'Warsaw': {lat: 52.237049, lon: 21.017532},
+        'Moscow': {lat: 55.751244, lon: 37.618423},
+        'StPetersburg': {},
+        'Odessa': {lat: 46.469391, lon: 30.740883}
+      }
       
-      const aucklandVec = latLonToVec(auckland.lat, auckland.lon, 0)
-      const wellingtonVec = latLonToVec(wellington.lat, wellington.lon, 0)
+      const cityToVec = ({lat, lon}) => latLonToVec(lat, lon, 0)
+      const aucklandVec = cityToVec(cities.Auckland)
+      const wellingtonVec = cityToVec(cities.Wellington)
 
-      const nelsonVec = latLonToVec(nelson.lat, nelson.lon, 0)
-      const dunedinVec = latLonToVec(dunedin.lat, dunedin.lon, 0)
+      const nelsonVec = cityToVec(cities.Nelson)
+      const dunedinVec = cityToVec(cities.Dunedin)
 
-      const madridVec = latLonToVec(madrid.lat, madrid.lon, 0)
-      const beijingVec = latLonToVec(beijing.lat, beijing.lon, 0)
-      console.log({auckland, wellington, nelson, dunedin})
+      const madridVec = cityToVec(cities.Madrid)
+      const beijingVec = cityToVec(cities.Beijing)
+      //console.log({auckland, wellington, nelson, dunedin})
       console.log({aucklandVec, wellingtonVec, nelsonVec, dunedinVec})
       console.log({midwelack: getMidVec(aucklandVec, wellingtonVec)})
-      const mid = getMidPoint(auckland, wellington)
-      console.log({mid: latLonToVec(mid.lat, mid.lon, 1)})
+      //const mid = getMidPoint(auckland, wellington)
+      //console.log({mid: latLonToVec(mid.lat, mid.lon, 1)})
       //import * as THREE from '../build/three.module.js';
 
       //import Stats from './jsm/libs/stats.module.js';
@@ -151,11 +162,14 @@
 
         } );
 
-        function plotPath(start, end) {
+        function plotPath(s, e) {
+          console.log({s, e}) 
+          const start = cityToVec(s)
+          const end = cityToVec(e)
           //const spline = new THREE.LineCurve3(start, end)
           const mid = getMidVec(start, end)
           //const elev = new THREE.Vector3( mid.x * 1.2, mid.y * 1.2, mid.z * 1.2 )
-          const elev = mid.clampLength(GLOBE_RADIUS + 49, 500)
+          const elev = mid.clampLength(GLOBE_RADIUS + 8, 500)
           console.log('pp', {mid, elev})
           //const elev = latLonToVec(mid.lat, mid.lon, 5)
           console.log({mid, elev})
@@ -193,10 +207,18 @@
           scene.add( line );
         }
 
-        plotPath(aucklandVec, madridVec, getMidPoint(auckland, madrid));
-        plotPath(aucklandVec, wellingtonVec, getMidPoint(auckland, wellington));
-        plotPath(dunedinVec, beijingVec, getMidPoint(dunedin, beijing));
-        plotPath(nelsonVec, dunedinVec, getMidPoint(nelson, dunedin));
+        //plotPath(aucklandVec, madridVec);
+        //plotPath(aucklandVec, wellingtonVec);
+        //plotPath(dunedinVec, beijingVec);
+        //plotPath(nelsonVec, dunedinVec);
+        plotPath(cities['Wellington'], cities['Auckland'])
+        plotPath(cities['Auckland'], cities['SanJose'])
+        plotPath(cities['SanJose'], cities['Ashburn'])
+        plotPath(cities['Ashburn'], cities['Paris'])
+        plotPath(cities['Paris'], cities['Frankfurt'])
+        plotPath(cities['Frankfurt'], cities['Warsaw'])
+        plotPath(cities['Warsaw'], cities['Moscow'])
+        plotPath(cities['Moscow'], cities['Odessa'])
         //const spline = new THREE.LineCurve3(auckland, madrid)
         //const spline2 = new THREE.LineCurve3(nelson, dunedin)
 
