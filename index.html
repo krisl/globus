@@ -85,6 +85,23 @@
       init();
       animate();
 
+
+      export function initSphere() {
+        const COLOR_SPHERE_NIGHT = 0xa58945;
+        const geometry = new THREE.SphereGeometry(GLOBE_RADIUS, 40, 30);
+        const loader = new THREE.TextureLoader();
+        const material = new THREE.MeshPhongMaterial({
+          map: loader.load('https://i.imgur.com/45naBE9.jpg'),
+          color: COLOR_SPHERE_NIGHT
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        
+        scene.add(mesh);
+
+        const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 6);
+        scene.add(light);
+      }
+
       function init() {
 
         renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -105,7 +122,7 @@
         controls.minDistance = 10;
         controls.maxDistance = 500;
 
-
+        initSphere()
         // Position and THREE.Color Data
 
         var points = THREE.GeometryUtils.hilbert3D( new THREE.Vector3( 0, 0, 0 ), 20.0, 1, 0, 1, 2, 3, 4, 5, 6, 7 );
