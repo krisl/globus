@@ -159,50 +159,6 @@
 
         } );
 
-        function plotPath(s, e) {
-          console.log({s, e}) 
-          const start = cityToVec(s)
-          const end = cityToVec(e)
-          //const spline = new THREE.LineCurve3(start, end)
-          const mid = getMidVec(start, end)
-          //const elev = new THREE.Vector3( mid.x * 1.2, mid.y * 1.2, mid.z * 1.2 )
-          const elev = mid.clampLength(GLOBE_RADIUS + 8, 500)
-          console.log('pp', {mid, elev})
-          //const elev = latLonToVec(mid.lat, mid.lon, 5)
-          console.log({mid, elev})
-          var spline = new THREE.QuadraticBezierCurve3( 
-            start,
-            mid,
-            //new THREE.Vector3( elev.x * 1.1, elev.y * 1.1, elev.z * 1.1 ),
-            end
-          );
-          var divisions = Math.round( 12 * points.length );
-          var color = new THREE.Color();
-          var positions = [];
-          var colors = [];
-
-          for ( var i = 0; i < divisions; i ++ ) {
-
-            var point = spline.getPoint( i / divisions );
-            positions.push( point.x, point.y, point.z );
-
-            color.setHSL( i / divisions, 1.0, 0.5 );
-            colors.push( color.r, color.g, color.b );
-
-          }
-
-
-          // Line2 ( LineGeometry, LineMaterial )
-
-          var geometry = new THREE.LineGeometry();
-          geometry.setPositions( positions );
-          geometry.setColors( colors );
-
-          line = new THREE.Line2( geometry, matLine );
-          line.computeLineDistances();
-          line.scale.set( 1, 1, 1 );
-          scene.add( line );
-        }
 
         //plotPath(aucklandVec, madridVec);
         //plotPath(aucklandVec, wellingtonVec);
@@ -229,6 +185,51 @@
 
         initGui();
 
+      }
+
+      function plotPath(s, e) {
+        console.log({s, e}) 
+        const start = cityToVec(s)
+        const end = cityToVec(e)
+        //const spline = new THREE.LineCurve3(start, end)
+        const mid = getMidVec(start, end)
+        //const elev = new THREE.Vector3( mid.x * 1.2, mid.y * 1.2, mid.z * 1.2 )
+        const elev = mid.clampLength(GLOBE_RADIUS + 8, 500)
+        console.log('pp', {mid, elev})
+        //const elev = latLonToVec(mid.lat, mid.lon, 5)
+        console.log({mid, elev})
+        var spline = new THREE.QuadraticBezierCurve3( 
+          start,
+          mid,
+          //new THREE.Vector3( elev.x * 1.1, elev.y * 1.1, elev.z * 1.1 ),
+          end
+        );
+        var divisions = Math.round( 12 * 50 /*points.length*/ );
+        var color = new THREE.Color();
+        var positions = [];
+        var colors = [];
+
+        for ( var i = 0; i < divisions; i ++ ) {
+
+          var point = spline.getPoint( i / divisions );
+          positions.push( point.x, point.y, point.z );
+
+          color.setHSL( i / divisions, 1.0, 0.5 );
+          colors.push( color.r, color.g, color.b );
+
+        }
+
+
+        // Line2 ( LineGeometry, LineMaterial )
+
+        var geometry = new THREE.LineGeometry();
+        geometry.setPositions( positions );
+        geometry.setColors( colors );
+
+        line = new THREE.Line2( geometry, matLine );
+        line.computeLineDistances();
+        line.scale.set( 1, 1, 1 );
+        scene.add( line );
       }
 
       function onWindowResize() {
