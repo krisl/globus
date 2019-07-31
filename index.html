@@ -19,8 +19,99 @@
 
   <body>
 
-    <div id="container"></div>
+    <div id="container" style="position: absolute; top: 40px;">
+      <p><textarea class="form-control" id="trace" placeholder="traceroute to ..."></textarea></p>
+      <p><button class="form-control btn btn-primary" id="submit">Map it!</button></p>
+    </div>
     <script type="module">
+      function parseLine (line) {
+        var r1, r2;
+        if (
+          (r1=/^ *(\d+) /.exec(line)) !== null && (
+            (r2=/\(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\)/.exec(line)) !== null ||
+            (r2=/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/.exec(line)) !== null ||
+            (r2=/\((?:[0-9a-f]{1,4}::?){1,7}[0-9a-f]{1,4}\)/.exec(line)) !== null ||
+            (r2=/\b(?:[0-9a-f]{1,4}::?){1,7}[0-9a-f]{1,4}\b/.exec(line)) !== null
+          )
+        ) {
+          var n = parseInt(r1[1]);
+          var ip = r2[0];
+          if (ip[0] == "(") {
+            ip = ip.substring(1, r2[0].length-1);
+          }
+          return { n: n, ip: ip }
+        }
+      }
+
+      function parseResponse (data) {
+        const db = {}
+        // TODO re-enable submit button
+        // private IP addresses, like 192.168.1.1, will just be omitted from the response
+        Object.entries(data).forEach(entry => {
+          if (entry[1].error) {
+           const errorText = (entry[1].error.title == "Rate limit exceeded")
+             ? "ipinfo.io ratelimit exhausted. Please try again tomorrow."
+             : `Error: ${entry[1].error.title}`
+           //$("#submit").attr("class","form-control btn btn-danger").text(errorText);
+           return;
+         }
+         const ip = entry[0].split("/")[0];
+         const loc = entry[1].trim();
+         if (loc == "undefined") {
+           db[ip] = loc;
+           return;
+         }
+         var ll = loc.split(",").map(parseFloat);
+         console.log(ip, ll);
+         db[ip] = { lat: ll[0], lon: ll[1], ip };
+       })
+       return db
+      }
+
+      document.getElementById('submit').addEventListener('click', () => {
+        console.log('clicked')
+        const hosts = document.getElementById('trace').value.split('\n')
+          .map(line => parseLine(line))
+          .filter(x => x)
+
+        fetch('https://ipinfo.io/batch?token=5886e32e75537e', {
+          method: "POST",
+          headers: new Headers({
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify(hosts.map(host => `${host.ip}/loc`)),
+        }).then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          console.log(response);
+          throw new Error(response.status);
+        }).then(data => {
+          console.log({data})
+          const db = parseResponse(data)
+          override(db)
+          draw(hosts, db);
+        })
+          
+      })
+
+      function draw (hosts, db) {
+        console.log('draw', {hosts, db})
+        var lasthost
+        var lastloc
+        hosts.forEach(host => {
+          if (lasthost) {
+            const orig = db[lasthost.ip] || lastloc
+            lastloc = orig
+            const dest = db[host.ip]
+            console.log({orig, dest})
+            if (orig && dest)
+              plotPath(orig, dest)
+          }
+          lasthost = host || lasthost
+        })
+      }
+
       const GLOBE_RADIUS = 20
       const DEGREE_TO_RADIAN = Math.PI / 180
 
@@ -53,7 +144,17 @@
         'Warsaw': {lat: 52.237049, lon: 21.017532},
         'Moscow': {lat: 55.751244, lon: 37.618423},
         'StPetersburg': {},
-        'Odessa': {lat: 46.469391, lon: 30.740883}
+        'Odessa': {lat: 46.469391, lon: 30.740883},
+        'Vienna': {lat: 48.210033, lon: 16.363449}
+      }
+
+      function override(db) {
+        db['62.115.175.227'] = cities['SanJose']
+        db['62.115.175.226'] = cities['SanJose']
+        db['62.115.114.87'] = cities['Ashburn']
+        db['62.115.122.158'] = cities['Paris']
+        db['62.115.122.139'] = cities['Frankfurt']
+        db['62.115.138.23'] = cities['Vienna']
       }
       
       const cityToVec = ({lat, lon}) => latLonToVec(lat, lon, 0)
@@ -165,13 +266,14 @@
         //plotPath(dunedinVec, beijingVec);
         //plotPath(nelsonVec, dunedinVec);
         plotPath(cities['Wellington'], cities['Auckland'])
-        plotPath(cities['Auckland'], cities['SanJose'])
-        plotPath(cities['SanJose'], cities['Ashburn'])
-        plotPath(cities['Ashburn'], cities['Paris'])
-        plotPath(cities['Paris'], cities['Frankfurt'])
-        plotPath(cities['Frankfurt'], cities['Warsaw'])
-        plotPath(cities['Warsaw'], cities['Moscow'])
-        plotPath(cities['Moscow'], cities['Odessa'])
+        //plotPath(cities['Auckland'], cities['SanJose'])
+        //plotPath(cities['SanJose'], cities['Ashburn'])
+        //plotPath(cities['Ashburn'], cities['Paris'])
+        //plotPath(cities['Paris'], cities['Frankfurt'])
+        //plotPath(cities['Frankfurt'], cities['Warsaw'])
+        //plotPath(cities['Warsaw'], cities['Moscow'])
+        //plotPath(cities['Moscow'], cities['Odessa'])
+
         //const spline = new THREE.LineCurve3(auckland, madrid)
         //const spline2 = new THREE.LineCurve3(nelson, dunedin)
 
