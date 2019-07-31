@@ -39,6 +39,9 @@
           )
       }
 
+      const getMidPoint = (a, b) => ({lat: (a.lat + b.lat)/2.0, lon: (a.lon + b.lon)/2.0})
+      const getMidVec = (a, b) => new THREE.Vector3((a.x + b.x)/2.0, (a.y + b.y)/2.0, (a.z + b.z)/2.0)
+
       const auckland = {lat: -36.848461, lon: 174.763336}
       const wellington = {lat: -41.28664, lon: 174.77557}
       const nelson = {lat:-41.27078, lon: 173.28404}
@@ -55,6 +58,10 @@
       const madridVec = latLonToVec(madrid.lat, madrid.lon, 0)
       const beijingVec = latLonToVec(beijing.lat, beijing.lon, 0)
       console.log({auckland, wellington, nelson, dunedin})
+      console.log({aucklandVec, wellingtonVec, nelsonVec, dunedinVec})
+      console.log({midwelack: getMidVec(aucklandVec, wellingtonVec)})
+      const mid = getMidPoint(auckland, wellington)
+      console.log({mid: latLonToVec(mid.lat, mid.lon, 1)})
       //import * as THREE from '../build/three.module.js';
 
       //import Stats from './jsm/libs/stats.module.js';
@@ -128,7 +135,19 @@
         } );
 
         function plotPath(start, end) {
-          const spline = new THREE.LineCurve3(start, end)
+          //const spline = new THREE.LineCurve3(start, end)
+          const mid = getMidVec(start, end)
+          //const elev = new THREE.Vector3( mid.x * 1.2, mid.y * 1.2, mid.z * 1.2 )
+          const elev = mid.clampLength(GLOBE_RADIUS + 2, 500)
+          console.log('pp', {mid, elev})
+          //const elev = latLonToVec(mid.lat, mid.lon, 5)
+          console.log({mid, elev})
+          var spline = new THREE.QuadraticBezierCurve3( 
+            start,
+            mid,
+            //new THREE.Vector3( elev.x * 1.1, elev.y * 1.1, elev.z * 1.1 ),
+            end
+          );
           var divisions = Math.round( 12 * points.length );
           var color = new THREE.Color();
           var positions = [];
@@ -157,10 +176,10 @@
           scene.add( line );
         }
 
-        plotPath(aucklandVec, madridVec);
-        plotPath(aucklandVec, wellingtonVec);
-        plotPath(dunedinVec, beijingVec);
-        plotPath(nelsonVec, dunedinVec);
+        plotPath(aucklandVec, madridVec, getMidPoint(auckland, madrid));
+        plotPath(aucklandVec, wellingtonVec, getMidPoint(auckland, wellington));
+        plotPath(dunedinVec, beijingVec, getMidPoint(dunedin, beijing));
+        plotPath(nelsonVec, dunedinVec, getMidPoint(nelson, dunedin));
         //const spline = new THREE.LineCurve3(auckland, madrid)
         //const spline2 = new THREE.LineCurve3(nelson, dunedin)
 
