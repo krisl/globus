@@ -75,8 +75,20 @@
         var colors = [];
 
         var points = THREE.GeometryUtils.hilbert3D( new THREE.Vector3( 0, 0, 0 ), 20.0, 1, 0, 1, 2, 3, 4, 5, 6, 7 );
-
-        var spline = new THREE.CatmullRomCurve3( points );
+        console.log({points})
+        var spline1 = new THREE.CatmullRomCurve3( points.splice(20) );
+        var splinex = new THREE.QuadraticBezierCurve3( 
+          new THREE.Vector3( -10, 0, 0 ),
+          new THREE.Vector3( 20, 15, 0 ),
+          new THREE.Vector3( 10, 0, 0 )
+        );
+        var spline = new THREE.CubicBezierCurve3(
+          new THREE.Vector3( -10, 0, 0 ),
+          new THREE.Vector3( -5, 15, 0 ),
+          new THREE.Vector3( 20, 15, 0 ),
+          new THREE.Vector3( 10, 0, 0 )
+        );
+        //var spline = new THREE.LineCurve3(points[0], points[points.length-1]);
         var divisions = Math.round( 12 * points.length );
         var color = new THREE.Color();
 
