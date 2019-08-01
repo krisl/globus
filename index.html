@@ -91,6 +91,10 @@
           
       })
 
+      function getLocation (db, ip) {
+        return db[ip]
+      }
+
       function draw (hosts, db) {
         console.log('draw', {hosts, db})
 				removeLines();	
@@ -98,9 +102,9 @@
         var lastloc
         hosts.forEach(host => {
           if (lasthost) {
-            const orig = db[lasthost.ip] || lastloc
+            const orig = getLocation(db, lasthost.ip) || lastloc
             lastloc = orig
-            const dest = db[host.ip]
+            const dest = getLocation(db, host.ip)
             console.log({orig, dest})
             if (orig && dest)
               plotPath(orig, dest)
