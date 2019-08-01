@@ -63,7 +63,7 @@
       document.getElementById('submit').addEventListener('click', () => {
         console.log('clicked')
         const hosts = document.getElementById('trace').value.split('\n')
-          .map(line => parseLine(line))
+          .map(line => parseLine(line.replace('*', '')))
           .filter(x => x)
 
 				const db = {}
