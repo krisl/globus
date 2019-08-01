@@ -81,7 +81,7 @@
         }).then(data => {
           console.log({data})
           const db = parseResponse(data)
-          override(db)
+          override(hosts, db)
           draw(hosts, db);
         })
           
@@ -137,16 +137,46 @@
         'Moscow': {lat: 55.751244, lon: 37.618423},
         'StPetersburg': {},
         'Odessa': {lat: 46.469391, lon: 30.740883},
-        'Vienna': {lat: 48.210033, lon: 16.363449}
+        'Vienna': {lat: 48.210033, lon: 16.363449},
+        'Keiv': {lat: 50.431782, lon: 30.516382}
       }
 
-      function override(db) {
+      function getCity(ptr) {
+        const telia = {
+          'las': 'SanJose',
+          'ash': 'Ashburn',
+          'prs': 'Paris',
+          'ffm': 'Frankfurt',
+          'win': 'Vienna',
+          'keiv': 'Keiv'
+        }
+				console.log('getting city for', ptr)
+        if (ptr.endsWith('link.telia.net')) {
+          const abbrv = ptr.split('-')[0]
+					console.log({abbrv})
+          return cities[telia[abbrv]]
+        }
+      }
+
+      function overrideHost(host, db) {
+        const cityLoc = getCity(host.ptr)
+        if (cityLoc) {
+					console.log('overriding', host, cityLoc)
+					db[host.ip] = cityLoc
+				}
+      }
+
+      function override(hosts, db) {
+        hosts.forEach(host => overrideHost(host, db))
         db['62.115.175.227'] = cities['SanJose']
         db['62.115.175.226'] = cities['SanJose']
         db['62.115.114.87'] = cities['Ashburn']
         db['62.115.122.158'] = cities['Paris']
         db['62.115.122.139'] = cities['Frankfurt']
         db['62.115.138.23'] = cities['Vienna']
+				db['213.248.66.109'] = cities['Keiv']
+				db['80.93.127.246'] = cities['Keiv']
+				db['80.93.126.14'] = cities['Odessa']
       }
       
       const cityToVec = ({lat, lon}) => latLonToVec(lat, lon, 0)
