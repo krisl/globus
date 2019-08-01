@@ -144,10 +144,19 @@
         'Frankfurt': {lat: 50.110924, lon: 8.682127},
         'Warsaw': {lat: 52.237049, lon: 21.017532},
         'Moscow': {lat: 55.751244, lon: 37.618423},
-        'StPetersburg': {},
+        'StPetersburg': {lat:59.93863, lon: 30.31413},
         'Odessa': {lat: 46.469391, lon: 30.740883},
         'Vienna': {lat: 48.210033, lon: 16.363449},
-        'Keiv': {lat: 50.431782, lon: 30.516382}
+        'Keiv': {lat: 50.431782, lon: 30.516382},
+				'Chelyabinsk': {lat:55.15402, lon: 61.42915},
+				'Samara': {lat: 53.20007, lon: 50.15},
+				'Minsk': {lat: 53.9, lon: 27.56667},
+				'Eketerinburg': {lat: 56.8519, lon: 60.6122},
+				'Rezh': {lat: 57.37005, lon: 61.40428},
+				'Copenhagen': {lat: 55.676098, lon: 12.568337},
+				'Solna': {lat: 59.36004, lon: 18.00086},
+				'Kungsholmen': {lat: 59.3318291, lon: 18.0411797},
+				'Vantaa': {lat:60.29414, lon: 25.04099}
       }
 
       function getCity(ptr) {
@@ -157,13 +166,28 @@
           'prs': 'Paris',
           'ffm': 'Frankfurt',
           'win': 'Vienna',
-          'keiv': 'Keiv'
+          'keiv': 'Keiv',
+					'kbn': 'Copenhagen',
+					's': 'Solna',
+					'hls': 'Kungsholmen' //??
         }
+				const mts = {
+					'ekt': 'Eketerinburg',
+					'chel': 'Chelyabinsk',
+					'sam': 'Samara',
+					'msk': 'Minsk',
+					'spb': 'StPetersburg'
+				}
 				console.log('getting city for', ptr)
         if (ptr.endsWith('link.telia.net')) {
           const abbrv = ptr.split('-')[0]
-					console.log({abbrv})
+					console.log('telia', {abbrv})
           return cities[telia[abbrv]]
+        }
+        if (ptr.endsWith('mts-internet.net')) {
+          const abbrv = ptr.split('.')[2]
+					console.log('mts', {abbrv})
+          return cities[mts[abbrv]]
         }
       }
 
@@ -193,6 +217,10 @@
 				setHostLocation('213.248.66.109', cities['Keiv'])
 				setHostLocation('80.93.127.246', cities['Keiv'])
 				setHostLocation('80.93.126.14', cities['Odessa'])
+				setHostLocation('212.188.18.131', cities['Eketerinburg']) // not really
+				setHostLocation('94.140.141.39', cities['Rezh']) // not really
+				// comstardirect-ic-317229-hls-b1.c.telia.net (62.115.146.179) 
+				setHostLocation('62.115.146.179', cities['Vantaa']) // not really
       }
       
       const cityToVec = ({lat, lon}) => latLonToVec(lat, lon, 0)
