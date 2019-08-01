@@ -35,8 +35,8 @@
         }
       }
 
-      function parseResponse (data) {
-        const db = {}
+      function parseResponse (db, data) {
+        const setIPInfoLoc = setLocation(db, 'External:IPInfo')
         // TODO re-enable submit button
         // private IP addresses, like 192.168.1.1, will just be omitted from the response
         Object.entries(data).forEach(entry => {
@@ -50,12 +50,12 @@
          const ip = entry[0].split("/")[0];
          const loc = entry[1].trim();
          if (loc == "undefined") {
-           db[ip] = loc;
+           setIPInfoLoc(ip, loc)
            return;
          }
          var ll = loc.split(",").map(parseFloat);
          console.log(ip, ll);
-         db[ip] = { lat: ll[0], lon: ll[1], ip };
+         setIPInfoLoc(ip, { lat: ll[0], lon: ll[1], ip })
        })
        return db
       }
@@ -84,15 +84,15 @@
           throw new Error(response.status);
         }).then(data => {
           console.log({data})
-          const db = parseResponse(data)
-          override(hosts, db)
+          parseResponse(db, data)
           draw(hosts, db);
         })
           
       })
 
       function getLocation (db, ip) {
-        return db[ip]
+        const locs = db[ip] || {}
+        return locs['host'] || locs['ptr'] || locs['External:IPInfo']
       }
 
       function draw (hosts, db) {
@@ -167,25 +167,32 @@
         }
       }
 
+      const setLocation = (db, type) => function (ip, location) {
+        db[ip] = db[ip] || {}
+        db[ip][type] = location
+      }
+
       function overrideHost(host, db) {
         const cityLoc = getCity(host.ptr)
         if (cityLoc) {
 					console.log('overriding', host, cityLoc)
-					db[host.ip] = cityLoc
+          const setPtrLocation = setLocation(db, 'ptr');
+					setPtrLocation(host.ip, cityLoc)
 				}
       }
 
       function override(hosts, db) {
         hosts.forEach(host => overrideHost(host, db))
-        db['62.115.175.227'] = cities['SanJose']
-        db['62.115.175.226'] = cities['SanJose']
-        db['62.115.114.87'] = cities['Ashburn']
-        db['62.115.122.158'] = cities['Paris']
-        db['62.115.122.139'] = cities['Frankfurt']
-        db['62.115.138.23'] = cities['Vienna']
-				db['213.248.66.109'] = cities['Keiv']
-				db['80.93.127.246'] = cities['Keiv']
-				db['80.93.126.14'] = cities['Odessa']
+        const setHostLocation = setLocation(db, 'host')
+        setHostLocation('62.115.175.227', cities['SanJose'])
+        setHostLocation('62.115.175.226', cities['SanJose'])
+        setHostLocation('62.115.114.87', cities['Ashburn'])
+        setHostLocation('62.115.122.158', cities['Paris'])
+        setHostLocation('62.115.122.139', cities['Frankfurt'])
+        setHostLocation('62.115.138.23', cities['Vienna'])
+				setHostLocation('213.248.66.109', cities['Keiv'])
+				setHostLocation('80.93.127.246', cities['Keiv'])
+				setHostLocation('80.93.126.14', cities['Odessa'])
       }
       
       const cityToVec = ({lat, lon}) => latLonToVec(lat, lon, 0)
