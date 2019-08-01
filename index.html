@@ -66,6 +66,10 @@
           .map(line => parseLine(line))
           .filter(x => x)
 
+				const db = {}
+				override(hosts, db)
+				draw(hosts, db);
+
         fetch('https://ipinfo.io/batch?token=5886e32e75537e', {
           method: "POST",
           headers: new Headers({
@@ -89,6 +93,7 @@
 
       function draw (hosts, db) {
         console.log('draw', {hosts, db})
+				removeLines();	
         var lasthost
         var lastloc
         hosts.forEach(host => {
