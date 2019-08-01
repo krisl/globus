@@ -356,6 +356,10 @@
         scene.add( line );
       }
 
+			function removeLines () {
+				scene.children = scene.children.filter(child => child.constructor !== THREE.Line2)
+			}
+
       function onWindowResize() {
 
         camera.aspect = window.innerWidth / window.innerHeight;
