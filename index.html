@@ -196,31 +196,37 @@
         db[ip][type] = location
       }
 
-      function overrideHost(host, db) {
-        const cityLoc = getCity(host.ptr)
-        if (cityLoc) {
-					console.log('overriding', host, cityLoc)
-          const setPtrLocation = setLocation(db, 'ptr');
-					setPtrLocation(host.ip, cityLoc)
-				}
-      }
-
       function override(hosts, db) {
-        hosts.forEach(host => overrideHost(host, db))
-        const setHostLocation = setLocation(db, 'host')
-        setHostLocation('62.115.175.227', cities['SanJose'])
-        setHostLocation('62.115.175.226', cities['SanJose'])
-        setHostLocation('62.115.114.87', cities['Ashburn'])
-        setHostLocation('62.115.122.158', cities['Paris'])
-        setHostLocation('62.115.122.139', cities['Frankfurt'])
-        setHostLocation('62.115.138.23', cities['Vienna'])
-				setHostLocation('213.248.66.109', cities['Keiv'])
-				setHostLocation('80.93.127.246', cities['Keiv'])
-				setHostLocation('80.93.126.14', cities['Odessa'])
-				setHostLocation('212.188.18.131', cities['Eketerinburg']) // not really
-				setHostLocation('94.140.141.39', cities['Rezh']) // not really
-				// comstardirect-ic-317229-hls-b1.c.telia.net (62.115.146.179) 
-				setHostLocation('62.115.146.179', cities['Vantaa']) // not really
+				const hostOverrides = {
+					'62.115.175.227': cities['SanJose'],
+					'62.115.175.226': cities['SanJose'],
+					'62.115.114.87': cities['Ashburn'],
+					'62.115.122.158': cities['Paris'],
+					'62.115.122.139': cities['Frankfurt'],
+					'62.115.138.23': cities['Vienna'],
+					'213.248.66.109': cities['Keiv'],
+					'80.93.127.246': cities['Keiv'],
+					'80.93.126.14': cities['Odessa'],
+					'212.188.18.131': cities['Eketerinburg'], // not really
+					'94.140.141.39': cities['Rezh'], // not really
+					// comstardirect-ic-317229-hls-b1.c.telia.net (62.115.146.179) 
+					'62.115.146.179': cities['Vantaa'] // not really
+				}
+				const setHostLocation = setLocation(db, 'host')
+				const setPtrLocation = setLocation(db, 'ptr');
+        hosts.forEach(host => {
+					const cityLoc = getCity(host.ptr)
+					if (cityLoc) {
+						console.log('ptr loc', host, cityLoc)
+						setPtrLocation(host.ip, cityLoc)
+					}
+					
+					const hostLoc = hostOverrides[host.ip]
+					if (hostLoc) {
+						console.log('host loc', host, hostLoc)
+						setHostLocation(host.ip, hostLoc)
+					}
+				})
       }
       
       const cityToVec = ({lat, lon}) => latLonToVec(lat, lon, 0)
