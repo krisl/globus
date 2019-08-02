@@ -300,7 +300,6 @@
       var line, renderer, scene, camera, camera2, controls;
       var matLine;
       var stats;
-      var gui;
 
       // viewport
       var insetWidth;
@@ -529,7 +528,7 @@
 
       function initGui() {
 
-        gui = new dat.GUI();
+        const gui = new dat.GUI();
 
         var param = {
           'width (px)': 5,
