@@ -131,9 +131,13 @@
         })
       })
 
+      const makeLocFinder = (db, ip) => db[ip]
+        ? type => activeDBs[type] ? db[ip][type] : undefined
+        : () => undefined 
+
       function getLocation (db, ip) {
-        const locs = db[ip] || {}
-        return locs['host'] || locs['ptr'] || locs['External:RIPEBest'] || locs['External:IPInfo']
+        const getLocFor = makeLocFinder(db, ip)
+        return getLocFor('host') || getLocFor('ptr') || getLocFor('External:RIPEBest') || getLocFor('External:IPInfo')
       }
 
       function draw (hosts, db) {
