@@ -74,7 +74,7 @@
            return;
          }
          var ll = loc.split(",").map(parseFloat);
-         console.log(ip, ll);
+         //console.log(ip, ll);
          setIPInfoLoc(ip, { lat: ll[0], lon: ll[1], ip })
        })
        return db
@@ -103,7 +103,7 @@
           console.log(response);
           throw new Error(response.status);
         }).then(data => {
-          console.log({data})
+          //console.log({data})
           parseResponse(db, data)
           draw(hosts, db);
         })
@@ -148,7 +148,7 @@
           if (lasthost) {
             const orig = getLocation(db, lasthost.ip) || lastloc
             lastloc = orig
-            console.log({orig, dest})
+            //console.log({orig, dest})
             if (orig && dest)
               plotPath(orig, dest)
           }
@@ -421,16 +421,16 @@
       }
 
       function plotPath(s, e) {
-        console.log({s, e}) 
+        //console.log({s, e}) 
         const start = cityToVec(s)
         const end = cityToVec(e)
         //const spline = new THREE.LineCurve3(start, end)
         const mid = getMidVec(start, end)
         //const elev = new THREE.Vector3( mid.x * 1.2, mid.y * 1.2, mid.z * 1.2 )
         const elev = mid.clampLength(GLOBE_RADIUS + 8, 500)
-        console.log('pp', {mid, elev})
+        //console.log('pp', {mid, elev})
         //const elev = latLonToVec(mid.lat, mid.lon, 5)
-        console.log({mid, elev})
+        //console.log({mid, elev})
         var spline = new THREE.QuadraticBezierCurve3( 
           start,
           mid,
