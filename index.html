@@ -143,6 +143,7 @@
         var lastloc
         hosts.forEach(host => {
           const dest = getLocation(db, host.ip)
+          console.log(host.n, host.ip, host.ptr, dest, db[host.ip])
           if (dest) plotHost(dest)
           if (lasthost) {
             const orig = getLocation(db, lasthost.ip) || lastloc
