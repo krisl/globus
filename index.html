@@ -48,6 +48,13 @@
         }
       }
 
+      function parseRipe(db, data) {
+        const setIPInfoLoc = setLocation(db, 'External:RIPEBest')
+        Object.entries(data.data || {}).forEach(([ip, info]) => {
+          setIPInfoLoc(ip, { lat: parseFloat(info.latitude), lon: parseFloat(info.longitude) })
+        })
+      }
+
       function parseResponse (db, data) {
         const setIPInfoLoc = setLocation(db, 'External:IPInfo')
         // TODO re-enable submit button
@@ -101,11 +108,32 @@
           draw(hosts, db);
         })
           
+        const octet = (i, ip) => parseInt(ip.split('.')[i])
+        const betweenIncl = (min, max, i) => i >= min && i <= max
+
+        const isInternalIP = (ip) => ip.startsWith('10.') || ip.startsWith('192.168.') || 
+          (ip.startsWith('172.') && betweenIncl(16, 31, octet(1, ip)))
+
+        const notInternal = (host) => !isInternalIP(host.ip)
+
+        const hostsString = hosts.filter(notInternal).map(host => host.ip).join(',')
+        fetch(`https://cors-anywhere.herokuapp.com/https://ipmap.ripe.net/api/v1/locate/all?resources=${hostsString}`, {
+          headers: new Headers({"Content-Type": "application/json"})
+        }).then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          console.log(response);
+          throw new Error(response.status);
+        }).then(data => {
+          parseRipe(db, data)
+          draw(hosts, db)
+        })
       })
 
       function getLocation (db, ip) {
         const locs = db[ip] || {}
-        return locs['host'] || locs['ptr'] || locs['External:IPInfo']
+        return locs['host'] || locs['ptr'] || locs['External:RIPEBest'] || locs['External:IPInfo']
       }
 
       function draw (hosts, db) {
