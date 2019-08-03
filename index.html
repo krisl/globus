@@ -181,13 +181,14 @@
       const getMidPoint = (a, b) => ({lat: (a.lat + b.lat)/2.0, lon: (a.lon + b.lon)/2.0})
       const getMidVec = (a, b) => new THREE.Vector3((a.x + b.x)/2.0, (a.y + b.y)/2.0, (a.z + b.z)/2.0)
 
-
-      const activeDBs = {
+      const makeActiveDBs = () => ({
         'host': true,
         'ptr': true,
         'External:RIPEBest': true,
         'External:IPInfo': true,
-      }
+      })
+
+      const activeDBs = makeActiveDBs()
        
       const cities = {
         'Auckland': {lat: -36.848461, lon: 174.763336},
