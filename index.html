@@ -51,7 +51,7 @@
       function parseRipe(db, data) {
         const setIPInfoLoc = setLocation(db, 'External:RIPEBest')
         Object.entries(data.data || {}).forEach(([ip, info]) => {
-          setIPInfoLoc(ip, { lat: parseFloat(info.latitude), lon: parseFloat(info.longitude) })
+          setIPInfoLoc(ip, { lat: parseFloat(info.latitude), lon: parseFloat(info.longitude), id: info.id })
         })
       }
 
@@ -248,12 +248,16 @@
         if (ptr.endsWith('link.telia.net')) {
           const abbrv = ptr.split('-')[0]
 					console.log('telia', {abbrv})
-          return cities[telia[abbrv]]
+          const location = cities[telia[abbrv]]
+          location.city = telia[abbrv]
+          return location
         }
         if (ptr.endsWith('mts-internet.net')) {
           const abbrv = ptr.split('.')[2]
 					console.log('mts', {abbrv})
-          return cities[mts[abbrv]]
+          const location = cities[mts[abbrv]]
+          location.city = mts[abbrv]
+          return location
         }
       }
 
