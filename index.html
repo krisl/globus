@@ -545,13 +545,19 @@
         activeDBs[type] = active
       }
 
-      function initDBGui() {
-        const gui = new dat.GUI();
-        Object.keys(activeDBs).forEach(dbType => {
-          gui.add( activeDBs, dbType ).onChange((val) => {
-            setDBTypeActive(dbType, val)
+      function addDBsToGui(gui, configdb) {
+        Object.keys(configdb).forEach(dbType => {
+          gui.add( configdb, dbType ).onChange((val) => {
+            //setDBTypeActive(dbType, val)
+            draw(getHosts(), db)
           })
         })
+      }
+
+      function initDBGui() {
+        const gui = new dat.GUI();
+        addDBsToGui(gui, activeDBs)
+        return gui
       }
 
       function initGui() {
