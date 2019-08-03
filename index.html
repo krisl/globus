@@ -31,7 +31,7 @@
 					const text = document.getElementById('trace').value
 					var dummy = document.createElement('input');
 					document.body.appendChild(dummy);
-					dummy.value = window.location.href + '?trace='+ encodeURIComponent(text);
+					dummy.value = window.location.origin + window.location.pathname + '?trace='+ encodeURIComponent(text);
 					dummy.select();
 					document.execCommand('copy');
 					document.body.removeChild(dummy);
