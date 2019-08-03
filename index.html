@@ -85,10 +85,17 @@
           .filter(x => x)
 
       const db = {}
+      const perIpDbs = {}
 
       document.getElementById('submit').addEventListener('click', () => {
         console.log('clicked')
         const hosts = getHosts() 
+
+        const folders = hosts.map(host => { 
+          const folder = dbgui.addFolder(host.n)
+          perIpDbs[host.ip] = makeActiveDBs()
+          addDBsToGui(folder, perIpDbs[host.ip])
+        })
 
 				override(hosts, db)
 				draw(hosts, db);
