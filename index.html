@@ -142,7 +142,7 @@
       })
 
       const makeLocFinder = (db, ip) => db[ip]
-        ? type => activeDBs[type] ? db[ip][type] : undefined
+        ? type => (activeDBs[type] && perIpDbs[ip][type]) ? db[ip][type] : undefined
         : () => undefined 
 
       function getLocation (db, ip) {
