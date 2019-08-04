@@ -516,7 +516,10 @@
       }
 
 			function removeLines () {
-				scene.children = scene.children.filter(child => child.constructor !== THREE.Line2)
+				scene.children = scene.children.filter((child, i) =>
+          child.constructor !== THREE.Line2 && 
+          (child.constructor !== THREE.Mesh || i < 2)
+        )
 			}
 
       function onWindowResize() {
