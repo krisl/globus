@@ -439,8 +439,8 @@
         stats = new Stats();
         document.body.appendChild( stats.dom );
 
-        initGui();
-        initDBGui();
+        const gui = initGui();
+        window.dbgui = initDBGui(gui);
 
       }
 
@@ -579,8 +579,7 @@
         })
       }
 
-      function initDBGui() {
-        const gui = new dat.GUI();
+      function initDBGui(gui) {
         addDBsToGui(gui, activeDBs)
         return gui
       }
@@ -648,6 +647,7 @@
 
         } );
 
+        return gui
       }
 
     </script>
