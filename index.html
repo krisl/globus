@@ -350,9 +350,6 @@
         'width (px)': 5,
         'nodes': true,
         'hops': true,
-        'dashed': false,
-        'dash scale': 1,
-        'dash / gap': 1
       };
 
       init();
@@ -609,50 +606,6 @@
 
         gui.add( param, 'nodes' )
         gui.add( param, 'hops' )
-        gui.add( param, 'dashed' ).onChange( function ( val ) {
-
-          matLine.dashed = val;
-
-          // dashed is implemented as a defines -- not as a uniform. this could be changed.
-          // ... or THREE.LineDashedMaterial could be implemented as a separate material
-          // temporary hack - renderer should do this eventually
-          if ( val ) matLine.defines.USE_DASH = ""; else delete matLine.defines.USE_DASH;
-          matLine.needsUpdate = true;
-
-
-        } );
-
-        gui.add( param, 'dash scale', 0.5, 2, 0.1 ).onChange( function ( val ) {
-
-          matLine.dashScale = val;
-
-        } );
-
-        gui.add( param, 'dash / gap', { '2 : 1': 0, '1 : 1': 1, '1 : 2': 2 } ).onChange( function ( val ) {
-
-          switch ( val ) {
-
-            case '0':
-              matLine.dashSize = 2;
-              matLine.gapSize = 1;
-
-              break;
-
-            case '1':
-              matLine.dashSize = 1;
-              matLine.gapSize = 1;
-
-              break;
-
-            case '2':
-              matLine.dashSize = 1;
-              matLine.gapSize = 2;
-
-              break;
-
-          }
-
-        } );
 
         return gui
       }
