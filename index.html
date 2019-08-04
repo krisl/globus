@@ -171,12 +171,12 @@
         hosts.forEach(host => {
           const dest = getLocation(db, host.ip)
           console.log(host.n, host.ip, host.ptr, dest, db[host.ip])
-          if (dest) plotHost(dest)
+          if (dest && param.nodes) plotHost(dest)
           if (lasthost) {
             const orig = getLocation(db, lasthost.ip) || lastloc
             lastloc = orig
             //console.log({orig, dest})
-            if (orig && dest)
+            if (orig && dest && param.hops)
               plotPath(orig, dest)
           }
           lasthost = host || lasthost
@@ -344,6 +344,15 @@
       // viewport
       var insetWidth;
       var insetHeight;
+
+      const param = {
+        'width (px)': 5,
+        'nodes': true,
+        'hops': true,
+        'dashed': false,
+        'dash scale': 1,
+        'dash / gap': 1
+      };
 
       init();
       animate();
@@ -588,20 +597,14 @@
 
         const gui = new dat.GUI();
 
-        var param = {
-          'width (px)': 5,
-          'dashed': false,
-          'dash scale': 1,
-          'dash / gap': 1
-        };
-
-
         gui.add( param, 'width (px)', 1, 10 ).onChange( function ( val ) {
 
           matLine.linewidth = val;
 
         } );
 
+        gui.add( param, 'nodes' )
+        gui.add( param, 'hops' )
         gui.add( param, 'dashed' ).onChange( function ( val ) {
 
           matLine.dashed = val;
