@@ -511,3 +511,7 @@ iframe {
 		padding-left: 0;
 	}
 }
+
+.dg.main.a {
+  opacity: 0.9;
+}
