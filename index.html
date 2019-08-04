@@ -104,6 +104,7 @@
         console.log('clicked')
         const hosts = getHosts() 
         showHostsTable(hosts)
+        Object.values(dbgui.__folders).forEach(f => dbgui.removeFolder(f))
         const folders = hosts.map(host => { 
           const folder = dbgui.addFolder(host.n)
           perIpDbs[host.ip] = makeActiveDBs()
