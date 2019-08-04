@@ -19,9 +19,10 @@
 
   <body>
 
-    <div id="container" style="position: absolute; top: 40px;">
+    <div id="container" style="position: absolute; top: 40px; height: calc(100vh - 40px); display: flex; flex-direction: column;">
       <p style="margin-bottom: 5px;"><textarea class="form-control" id="trace" style="background: transparent; color: red" placeholder="paste ye olde traceroute here"></textarea></p>
       <p style="margin-top: 5px"><button class="form-control btn btn-primary" id="submit">Plot</button><a id='link'>Link</a></p>
+      <div id="hosttable" style="overflow: scroll; color: yellowgreen;"></div>
     </div>
     <script type="module">
 			const trace = document.getElementById('trace')	
@@ -80,6 +81,18 @@
        return db
       }
 
+      function showHostsTable (hosts) {
+        const table = `
+          <table>
+            ${hosts.map(host => `<tr>
+              <td>${host.n}</td><td>${host.ip}</td><td>${host.ptr}</td>
+            </tr>`).join('\n')}
+          </table>`
+
+        var div = document.getElementById('hosttable');
+        div.innerHTML = table.trim();
+      }
+
       const getHosts = () => document.getElementById('trace').value.split('\n')
           .map(line => parseLine(line.replace('*', '')))
           .filter(x => x)
@@ -90,7 +103,7 @@
       document.getElementById('submit').addEventListener('click', () => {
         console.log('clicked')
         const hosts = getHosts() 
-
+        showHostsTable(hosts)
         const folders = hosts.map(host => { 
           const folder = dbgui.addFolder(host.n)
           perIpDbs[host.ip] = makeActiveDBs()
