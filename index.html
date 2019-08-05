@@ -604,8 +604,8 @@
 
         } );
 
-        gui.add( param, 'nodes' )
-        gui.add( param, 'hops' )
+        gui.add( param, 'nodes' ).onChange(() => draw(getHosts(), db))
+        gui.add( param, 'hops' ).onChange(() => draw(getHosts(), db))
 
         return gui
       }
