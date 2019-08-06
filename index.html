@@ -338,7 +338,7 @@
       //import { LineGeometry } from './jsm/lines/LineGeometry.js';
       //import { GeometryUtils } from './jsm/utils/GeometryUtils.js';
 
-      var line, renderer, scene, camera, controls;
+      var line, renderer, scene, camera, controls, sphere;
       var matLine;
       var stats;
 
@@ -370,6 +370,7 @@
 
         const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 6);
         scene.add(light);
+        return mesh
       }
 
       function init() {
@@ -389,7 +390,7 @@
         controls.minDistance = 10;
         controls.maxDistance = 500;
 
-        initSphere()
+        sphere = initSphere()
         // Position and THREE.Color Data
 
         var points = THREE.GeometryUtils.hilbert3D( new THREE.Vector3( 0, 0, 0 ), 20.0, 1, 0, 1, 2, 3, 4, 5, 6, 7 );
@@ -559,7 +560,7 @@
 
 
         renderer.setScissorTest( false );
-
+        sphere.rotation.y += 0.02
       }
 
       //
