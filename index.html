@@ -537,15 +537,6 @@
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
         raycaster.setFromCamera( mouse, camera );
-        const intersects = raycaster.intersectObjects(scene.children)
-        console.log({intersects})
-        intersects.forEach(i => {
-          console.log({i}) 
-          //i.object.material.color.set(0xff000000)
-          if (i.object !== scene.children[0] && i.object !== scene.children[1]) {
-            i.object.scale.set(2,2,2)
-          }
-        })
       }
 
       function animate() {
@@ -562,6 +553,13 @@
 
         // renderer will set this eventually
         matLine.resolution.set( window.innerWidth, window.innerHeight ); // resolution of the viewport
+
+        // intersects
+        const nodes = scene.children.filter((c, i) => i > 1 && c.constructor === THREE.Mesh)
+        nodes.forEach(node => raycaster.intersectObject(node).length > 0
+          ? node.scale.set(2,2,2)
+          : node.scale.set(1,1,1)
+        )
 
         renderer.render( scene, camera );
 
