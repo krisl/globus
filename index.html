@@ -440,7 +440,8 @@
 
         window.addEventListener( 'resize', onWindowResize, false );
         onWindowResize();
-
+        
+        window.addEventListener('mousemove', onInteraction)
         stats = new Stats();
         document.body.appendChild( stats.dom );
 
@@ -527,6 +528,24 @@
         insetWidth = window.innerHeight / 4; // square
         insetHeight = window.innerHeight / 4;
 
+      }
+
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      function onInteraction(event) {
+        event.preventDefault()
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+        raycaster.setFromCamera( mouse, camera );
+        const intersects = raycaster.intersectObjects(scene.children)
+        console.log({intersects})
+        intersects.forEach(i => {
+          console.log({i}) 
+          //i.object.material.color.set(0xff000000)
+          if (i.object !== scene.children[0] && i.object !== scene.children[1]) {
+            i.object.scale.set(2,2,2)
+          }
+        })
       }
 
       function animate() {
