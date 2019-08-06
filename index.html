@@ -539,6 +539,14 @@
         raycaster.setFromCamera( mouse, camera );
       }
 
+      function highlightNode(node) {
+        (node.scale.set(2,2,2), console.log('name', node.name))
+      }
+
+      function normalNode(node) {
+        node.scale.set(1,1,1)
+      }
+
       function animate() {
 
         requestAnimationFrame( animate );
@@ -557,8 +565,8 @@
         // intersects
         const nodes = scene.children.filter((c, i) => i > 1 && c.constructor === THREE.Mesh)
         nodes.forEach(node => raycaster.intersectObject(node).length > 0
-          ? node.scale.set(2,2,2)
-          : node.scale.set(1,1,1)
+          ? highlightNode(node)
+          : normalNode(node)
         )
 
         renderer.render( scene, camera );
