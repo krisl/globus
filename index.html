@@ -541,12 +541,14 @@
       }
 
       function highlightNode(node) {
+        // TODO animate scaling
         (node.scale.set(2,2,2), console.log('name', node.name))
         // TODO add permanent references to these elements
         document.getElementById('host'+node.name).className = 'active'
       }
 
       function normalNode(node) {
+        // TODO animate scaling
         node.scale.set(1,1,1)
         // TODO add permanent references to these elements
         document.getElementById('host'+node.name).className = ''
