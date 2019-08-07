@@ -559,6 +559,10 @@
         document.getElementById('host'+node.name).className = ''
       }
 
+      function isNodeActive(node) {
+        return raycaster.intersectObject(node).length > 0
+      }
+
       function animate() {
 
         requestAnimationFrame( animate );
@@ -576,7 +580,7 @@
 
         // intersects
         const nodes = scene.children.filter((c, i) => i > 1 && c.constructor === THREE.Mesh)
-        nodes.forEach(node => raycaster.intersectObject(node).length > 0
+        nodes.forEach(node => isNodeActive(node)
           ? highlightNode(node)
           : normalNode(node)
         )
