@@ -560,7 +560,8 @@
       }
 
       function isNodeActive(node) {
-        return raycaster.intersectObject(node).length > 0
+        return raycaster.intersectObject(node).length > 0 ||
+          document.querySelector(`#host${node.name}:hover`)
       }
 
       function animate() {
