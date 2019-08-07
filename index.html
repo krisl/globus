@@ -236,14 +236,18 @@
 				'Copenhagen': {lat: 55.676098, lon: 12.568337},
 				'Solna': {lat: 59.36004, lon: 18.00086},
 				'Kungsholmen': {lat: 59.3318291, lon: 18.0411797},
-				'Vantaa': {lat:60.29414, lon: 25.04099}
+				'Vantaa': {lat:60.29414, lon: 25.04099},
+        'Dallas': {lat: 32.897480, lon: -97.040443},
+        'Prague': {lat: undefined, lon: undefined}
       }
 
       function getCity(ptr) {
         const telia = {
           'las': 'SanJose',
           'ash': 'Ashburn',
+          'dls': 'Dallas',
           'prs': 'Paris',
+          'prag': 'Prague',
           'ffm': 'Frankfurt',
           'win': 'Vienna',
           'kiev': 'Kiev',
@@ -263,7 +267,7 @@
           const abbrv = ptr.split('-')[0]
 					console.log('telia', {abbrv})
           const location = cities[telia[abbrv]]
-          location.city = telia[abbrv]
+          location && (location.city = telia[abbrv])
           return location
         }
         if (ptr.endsWith('mts-internet.net')) {
