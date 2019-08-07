@@ -446,6 +446,7 @@
         onWindowResize();
         
         window.addEventListener('mousemove', onInteraction)
+        window.addEventListener('touchmove', onInteraction)
         stats = new Stats();
         document.body.appendChild( stats.dom );
 
