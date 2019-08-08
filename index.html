@@ -447,6 +447,7 @@
         
         window.addEventListener('mousemove', onInteraction)
         window.addEventListener('touchmove', onInteraction)
+        window.addEventListener('click', () => navigate(controls, camera))
         stats = new Stats();
         document.body.appendChild( stats.dom );
 
@@ -562,6 +563,19 @@
       function isNodeActive(node) {
         return raycaster.intersectObject(node).length > 0 ||
           document.querySelector(`#host${node.name}:hover`)
+      }
+
+      function navigate(controls, camera) {
+        const item = scene.children
+          .filter((c, i) => i > 1 && c.constructor === THREE.Mesh)
+          .find(isNodeActive)
+        
+        if (item) {
+          const point = item.position;
+          const camDistance = camera.position.length();
+          camera.position.copy(point).normalize().multiplyScalar(camDistance);
+          controls.update();
+        }
       }
 
       function animate() {
