@@ -238,6 +238,10 @@
 				'Kungsholmen': {lat: 59.3318291, lon: 18.0411797},
 				'Vantaa': {lat:60.29414, lon: 25.04099},
         'Dallas': {lat: 32.897480, lon: -97.040443},
+        'Vladivostok': {lat: 43.1056213, lon: 131.8735352},
+        'Novosibirsk': {lat: 55.018803, lon: 82.933952},
+        'Krasnoyarsk': {lat: 58.450100, lon: 92.186768},
+        'Irkutsk': {lat: 52.29778, lon: 104.29639},
         'Prague': {lat: undefined, lon: undefined}
       }
 
@@ -260,7 +264,13 @@
 					'chel': 'Chelyabinsk',
 					'sam': 'Samara',
 					'msk': 'Minsk',
-					'spb': 'StPetersburg'
+					'spb': 'StPetersburg',
+          'vldv': 'Vladivostok',
+          'nsk': 'Novosibirsk',
+          'krsk': 'Krasnoyarsk',
+          'irk': 'Irkutsk',
+          //'skv': undefined,
+          //'heh': undefined
 				}
 				console.log('getting city for', ptr)
         if (ptr.endsWith('link.telia.net')) {
@@ -274,7 +284,7 @@
           const abbrv = ptr.split('.')[2]
 					console.log('mts', {abbrv})
           const location = cities[mts[abbrv]]
-          location.city = mts[abbrv]
+          location && (location.city = mts[abbrv])
           return location
         }
       }
