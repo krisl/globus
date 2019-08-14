@@ -193,7 +193,7 @@
         throw new Error(response.status);
       }).then(data => {
         parseRipe(db, data)
-        draw(hosts, db)
+        drawEverything()
       })
 
       /* IPINFO */
@@ -212,7 +212,7 @@
       }).then(data => {
         //console.log({data})
         parseResponse(db, data)
-        draw(hosts, db);
+        drawEverything()
       })
 
       const ipmapQ = makeQueue()
@@ -234,7 +234,8 @@
         })
 
 				override(hosts, db)
-				draw(hosts, db);
+				draw(_hosts, db);
+      }
 
       document.getElementById('submit').addEventListener('click', () => {
         console.log('clicked')
