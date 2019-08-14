@@ -153,6 +153,47 @@
       const db = {}
       const perIpDbs = {}
 
+      /* IPMAP */
+      const octet = (i, ip) => parseInt(ip.split('.')[i])
+      const betweenIncl = (min, max, i) => i >= min && i <= max
+
+      const isInternalIP = (ip) => ip.startsWith('10.') || ip.startsWith('192.168.') || 
+        (ip.startsWith('172.') && betweenIncl(16, 31, octet(1, ip)))
+
+      const notInternal = (host) => !isInternalIP(host.ip)
+
+      const ipmapFn = (hosts) => fetch(`https://cors-anywhere.herokuapp.com/https://ipmap.ripe.net/api/v1/locate/all?resources=${hosts.filter(notInternal).map(host => host.ip).join(',')}`, {
+        headers: new Headers({"Content-Type": "application/json"})
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        console.log(response);
+        throw new Error(response.status);
+      }).then(data => {
+        parseRipe(db, data)
+        draw(hosts, db)
+      })
+
+      /* IPINFO */
+      const ipinfoFn = (hosts) => fetch('https://ipinfo.io/batch?token=5886e32e75537e', {
+        method: "POST",
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(hosts.map(host => `${host.ip}/loc`)),
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        console.log(response);
+        throw new Error(response.status);
+      }).then(data => {
+        //console.log({data})
+        parseResponse(db, data)
+        draw(hosts, db);
+      })
+          
       document.getElementById('submit').addEventListener('click', () => {
         console.log('clicked')
         getHosts() 
@@ -169,46 +210,8 @@
 				override(hosts, db)
 				draw(hosts, db);
 
-        const ipinfoFn = (hosts) => fetch('https://ipinfo.io/batch?token=5886e32e75537e', {
-          method: "POST",
-          headers: new Headers({
-            "Content-Type": "application/json",
-          }),
-          body: JSON.stringify(hosts.map(host => `${host.ip}/loc`)),
-        }).then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-          console.log(response);
-          throw new Error(response.status);
-        }).then(data => {
-          //console.log({data})
-          parseResponse(db, data)
-          draw(hosts, db);
-        })
-          
         ipinfoFn(hosts)
 
-        const octet = (i, ip) => parseInt(ip.split('.')[i])
-        const betweenIncl = (min, max, i) => i >= min && i <= max
-
-        const isInternalIP = (ip) => ip.startsWith('10.') || ip.startsWith('192.168.') || 
-          (ip.startsWith('172.') && betweenIncl(16, 31, octet(1, ip)))
-
-        const notInternal = (host) => !isInternalIP(host.ip)
-
-        const ipmapFn = (hosts) => fetch(`https://cors-anywhere.herokuapp.com/https://ipmap.ripe.net/api/v1/locate/all?resources=${hosts.filter(notInternal).map(host => host.ip).join(',')}`, {
-          headers: new Headers({"Content-Type": "application/json"})
-        }).then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-          console.log(response);
-          throw new Error(response.status);
-        }).then(data => {
-          parseRipe(db, data)
-          draw(hosts, db)
-        })
         ipmapFn(hosts)
       })
 
