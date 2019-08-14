@@ -221,8 +221,7 @@
       ipinfoQ.onBulk(ipinfoFn)
       const queues = [ipmapQ, ipinfoQ]
           
-      document.getElementById('submit').addEventListener('click', () => {
-        console.log('clicked')
+      function drawEverything () {
         getHosts() 
         const hosts = _hosts
         showHostsTable(hosts)
@@ -237,11 +236,13 @@
 				override(hosts, db)
 				draw(hosts, db);
 
-        queues.forEach(q => q.enque(hosts))
+      document.getElementById('submit').addEventListener('click', () => {
+        console.log('clicked')
+        drawEverything()
       })
 
       const makeLocFinder = (db, ip) => db[ip]
-        ? type => (activeDBs[type] && perIpDbs[ip][type]) ? db[ip][type] : undefined
+        ? type => (activeDBs[type] && (perIpDbs[ip]||{})[type]) ? db[ip][type] : undefined
         : () => undefined 
 
       function getLocation (db, ip) {
