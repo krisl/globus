@@ -45,6 +45,7 @@
             ip: parts[2]
           }
           _hosts[parts[1]] = row
+          queues.forEach(q => q.enque(row))
           showHostsTable(_hosts)
         }
 
@@ -89,6 +90,7 @@
           const x = parsedLine.filter(x => x !== undefined) // align capture groups
           const obj = { n: parseInt(x[1]), ptr: x[2], ip: x[3] }
           _hosts.push(obj)
+          queues.forEach(q => q.enque(obj))
         }
 
         return parseLine
@@ -141,6 +143,7 @@
             this._ary = this._ary.concat(x)
             this._promise.then(() => {
               if (this._ary.length > 0) {
+                console.log('after promise', this._promiseFn)
                 this._promise = this._promiseFn(this.dequeAll())
               }
             })
