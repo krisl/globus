@@ -169,7 +169,7 @@
 				override(hosts, db)
 				draw(hosts, db);
 
-        fetch('https://ipinfo.io/batch?token=5886e32e75537e', {
+        const ipinfoFn = (hosts) => fetch('https://ipinfo.io/batch?token=5886e32e75537e', {
           method: "POST",
           headers: new Headers({
             "Content-Type": "application/json",
@@ -187,6 +187,8 @@
           draw(hosts, db);
         })
           
+        ipinfoFn(hosts)
+
         const octet = (i, ip) => parseInt(ip.split('.')[i])
         const betweenIncl = (min, max, i) => i >= min && i <= max
 
@@ -195,8 +197,7 @@
 
         const notInternal = (host) => !isInternalIP(host.ip)
 
-        const hostsString = hosts.filter(notInternal).map(host => host.ip).join(',')
-        fetch(`https://cors-anywhere.herokuapp.com/https://ipmap.ripe.net/api/v1/locate/all?resources=${hostsString}`, {
+        const ipmapFn = (hosts) => fetch(`https://cors-anywhere.herokuapp.com/https://ipmap.ripe.net/api/v1/locate/all?resources=${hosts.filter(notInternal).map(host => host.ip).join(',')}`, {
           headers: new Headers({"Content-Type": "application/json"})
         }).then(response => {
           if (response.ok) {
@@ -208,6 +209,7 @@
           parseRipe(db, data)
           draw(hosts, db)
         })
+        ipmapFn(hosts)
       })
 
       const makeLocFinder = (db, ip) => db[ip]
