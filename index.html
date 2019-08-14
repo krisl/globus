@@ -132,6 +132,27 @@
        return db
       }
 
+      function makeQueue () {
+        return {
+          _ary: [],
+          _promise: Promise.resolve(),
+          _promiseFn: () => Promise.resolve(),
+          enque: function(x) {
+            this._ary = this._ary.concat(x)
+            this._promise.then(() => {
+              if (this._ary.length > 0) {
+                this._promise = this._promiseFn(this.dequeAll())
+              }
+            })
+          },
+          deque: function() { return this._ary.shift() },
+          dequeAll: function() { return this._ary.splice(0) },
+          onBulk: function(promiseFn) { this._promiseFn = promiseFn }
+        }
+      }
+
+      window.makeQueue = makeQueue
+
       function showHostsTable (hosts) {
         const table = `
           <table>
@@ -193,6 +214,12 @@
         parseResponse(db, data)
         draw(hosts, db);
       })
+
+      const ipmapQ = makeQueue()
+      const ipinfoQ = makeQueue()
+      ipmapQ.onBulk(ipmapFn)
+      ipinfoQ.onBulk(ipinfoFn)
+      const queues = [ipmapQ, ipinfoQ]
           
       document.getElementById('submit').addEventListener('click', () => {
         console.log('clicked')
@@ -210,9 +237,7 @@
 				override(hosts, db)
 				draw(hosts, db);
 
-        ipinfoFn(hosts)
-
-        ipmapFn(hosts)
+        queues.forEach(q => q.enque(hosts))
       })
 
       const makeLocFinder = (db, ip) => db[ip]
