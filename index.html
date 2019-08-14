@@ -148,7 +148,7 @@
           .forEach(line => parseLine(line))
 
       const _hosts = []
-      const getHosts = () => getHostsFromTraceroute()
+      const getHosts = () => (getHostsFromTraceroute(), _hosts)
 
       const db = {}
       const perIpDbs = {}
