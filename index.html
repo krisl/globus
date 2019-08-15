@@ -89,7 +89,7 @@
         if (parsedLine) {
           const x = parsedLine.filter(x => x !== undefined) // align capture groups
           const obj = { n: parseInt(x[1]), ptr: x[2], ip: x[3] }
-          _hosts.push(obj)
+          _hosts[obj.n - 1] = obj
           queues.forEach(q => q.enque(obj))
         }
 
