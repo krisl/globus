@@ -168,11 +168,8 @@
         div.innerHTML = table.trim();
       }
 
-      const getHostsFromTraceroute = () => document.getElementById('trace').value.split('\n')
-          .forEach(line => parseLine(line))
-
       const _hosts = []
-      const getHosts = () => (getHostsFromTraceroute(), _hosts)
+      const getHosts = () => (_hosts)
 
       const db = {}
       const perIpDbs = {}
@@ -242,6 +239,11 @@
 
       document.getElementById('submit').addEventListener('click', () => {
         console.log('clicked')
+
+        const getHostsFromTraceroute = () => document.getElementById('trace').value.split('\n')
+            .forEach(line => parseLine(line))
+        getHostsFromTraceroute()
+
         drawEverything()
       })
 
