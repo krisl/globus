@@ -237,14 +237,18 @@
 				draw(_hosts, db);
       }
 
-      document.getElementById('submit').addEventListener('click', () => {
-        console.log('clicked')
-
+      function drawFromTextbox() {
+        _hosts.splice(0)
         const getHostsFromTraceroute = () => document.getElementById('trace').value.split('\n')
             .forEach(line => parseLine(line))
         getHostsFromTraceroute()
 
         drawEverything()
+      }
+
+      document.getElementById('submit').addEventListener('click', () => {
+        console.log('clicked')
+        drawFromTextbox()
       })
 
       const makeLocFinder = (db, ip) => db[ip]
@@ -755,6 +759,9 @@
 
         return gui
       }
+
+      if (trace.value)
+        drawFromTextbox()
 
     </script>
 
