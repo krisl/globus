@@ -27,16 +27,16 @@
     <script type="module">
       function initialParser (line) {
         console.log('initial', line)
-        if (line === '{"mtr":"x 0 33000"}')
+        if (line === 'x 0 33000')
           return parse_mtr_raw(line)
 
-        if (line.startsWith('{"mtr":"traceroute to ') || line.startsWith('{"mtr":" 1  '))
+        if (line.startsWith('traceroute to ') || line.startsWith(' 1  '))
           return parseJSONTracerouteLine(line)
       }
 
       function parse_mtr_raw (line) {
         console.log({line})
-        const parts = (JSON.parse(line).mtr||'').split(' ')
+        const parts = (line||'').split(' ')
         console.log({parts})
         if (parts[0] === 'h') {
           console.log('host')
@@ -97,7 +97,7 @@
       }
 
       function parseJSONTracerouteLine (line) {
-        parseLine(JSON.parse(line).mtr)
+        parseLine(line)
         showHostsTable(_hosts)
         return parseJSONTracerouteLine
       }
