@@ -343,6 +343,12 @@
         'Khabarovsk': {lat: 48.466412, lon: 135.066635}
       }
 
+      const airports = {
+        'dfw': {lat: 32.896944, lon: -97.038056},
+        'lax': {lat: 33.942791, lon: -118.410042},
+        'dsm': {lat: 41.619549, lon: -93.598022} // Des Moines
+      }
+
       function getCity(ptr) {
         const telia = {
           'las': 'SanJose',
@@ -370,6 +376,12 @@
           'skv': 'Skovorodino',
           'heh': 'Khabarovsk'
 				}
+        const msn = {
+          'lax': 'lax',
+          'sn1': undefined,
+          'dfw': 'dfw',
+          'dsm': 'dsm'
+        }
 				console.log('getting city for', ptr)
         if (ptr.endsWith('link.telia.net')) {
           const abbrv = ptr.split('-')[0]
@@ -383,6 +395,14 @@
 					console.log('mts', {abbrv})
           const location = cities[mts[abbrv]]
           location && (location.city = mts[abbrv])
+          return location
+        }
+        if (ptr.endsWith('.ntwk.msn.net')) {
+          const abbrv = ((s) => s && s.substr(0,3))(ptr.split('.').reverse()[3])
+          
+					console.log('msn', {abbrv})
+          const location = airports[msn[abbrv]]
+          //location && (location.city = msn[abbrv])
           return location
         }
       }
