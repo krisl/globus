@@ -183,7 +183,7 @@
 
       const notInternal = (host) => !isInternalIP(host.ip)
 
-      const ipmapFn = (hosts) => fetch(`https://cors-anywhere.herokuapp.com/https://ipmap.ripe.net/api/v1/locate/all?resources=${hosts.filter(notInternal).map(host => host.ip).join(',')}`, {
+      const ipmapFn = (hosts) => fetch(`https://ipmap.ripe.net/api/v1/locate/all?resources=${hosts.filter(notInternal).map(host => host.ip).join(',')}`, {
         headers: new Headers({"Content-Type": "application/json"})
       }).then(response => {
         if (response.ok) {
